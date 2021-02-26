@@ -23,6 +23,12 @@ type handle
 The handle id.
 
 ```ocaml
+type signal = string
+```
+
+The signal.
+
+```ocaml
 type arg = [ `Float of float
            | `Int of int
            | `Pair of int * int
@@ -47,25 +53,25 @@ val debug : bool -> unit
 Enable or disable debugging.
 
 ```ocaml
-val emit : string -> arg list -> unit
+val emit : signal -> arg list -> unit
 ```
 
 Emite a signal.
 
 ```ocaml
-val get : handle -> string * callback
+val get : handle -> signal * callback
 ```
 
 Return a handle by its id.
 
 ```ocaml
-val connect : string -> callback -> handle
+val connect : signal -> callback -> handle
 ```
 
 Connect a callback to a signal, returning the handle id.
 
 ```ocaml
-val disconnect : string -> handle -> unit
+val disconnect : signal -> handle -> unit
 ```
 
 Disconnect a handle from a signal.

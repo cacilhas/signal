@@ -1,11 +1,12 @@
 type handle = Handle.t
+type signal = string
 type arg = [ `Float of float
            | `Int of int
            | `Pair of int * int
            | `String of string
            ]
 type callback = arg list -> unit
-type handle_wrap = handle * (string * callback)
+type handle_wrap = handle * (signal * callback)
 
 type storage_t = {
   mutable debug     : bool
