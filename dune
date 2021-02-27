@@ -1,5 +1,5 @@
 (library
   (name signal)
   (inline_tests)
-  (preprocess (pps ppx_inline_test))
-  (libraries uuidm))
+  (preprocess (staged_pps ppx_import ppx_inline_test))
+  (libraries core core.uuid))

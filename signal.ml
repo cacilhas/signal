@@ -1,10 +1,6 @@
 type handle = Handle.t
-type signal = string
-type arg = [ `Float of float
-           | `Int of int
-           | `Pair of int * int
-           | `String of string
-           ]
+type signal = [%import: Signal.signal]
+type arg = [%import: Signal.arg]
 type callback = arg list -> unit
 type handle_wrap = handle * (signal * callback)
 
@@ -26,11 +22,13 @@ let string_from_arg = function
 
 let log_connect signal id =
   if storage.debug
-  then Printf.eprintf "connected signal %s with handle %s\n" signal (Uuidm.to_string id)
+  then Printf.eprintf "connected signal %s with handle %s\n"
+         signal (Uuid.to_string id)
 
 let log_disconnect signal id =
   if storage.debug
-  then Printf.eprintf "handle %s disconnected from signal %s\n" (Uuidm.to_string id) signal
+  then Printf.eprintf "handle %s disconnected from signal %s\n"
+         (Uuid.to_string id) signal
 
 let log_emit signal (args : arg list) =
   if storage.debug
@@ -56,11 +54,17 @@ let connect signal cb =
 let emit signal args =
   log_emit signal args
 ; List.filter_map (filter_signal signal) storage.handles
-  |> List.iter (fun cb -> try (cb args) with e -> Printf.eprintf "%s" (Printexc.to_string e))
+  |> List.iter (fun cb ->
+                  try (cb args)
+                  with e -> Printf.eprintf "%s" (Printexc.to_string e)
+               )
 
 let disconnect signal id =
   let (name, _) = get id in
   if name != signal
-  then Failure (Printf.sprintf "signal %s doesn't match handle id %s" signal (Uuidm.to_string id)) |> raise
+  then Failure
+         (Printf.sprintf "signal %s doesn't match handle id %s"
+           signal (Uuid.to_string id))
+         |> raise
 ; storage.handles <- List.remove_assoc id storage.handles
 ; log_disconnect signal id
